@@ -1,4 +1,4 @@
-# Multi-stage build for SQLGatewayApp - Render Deployment
+# Multi-stage build for SQLGatewayApp
 # Stage 1: Build the application
 FROM maven:3.9-eclipse-temurin-11 AS builder
 
@@ -23,8 +23,8 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Copy the WAR file from builder stage (ROOT.war deploys at root context)
 COPY --from=builder /app/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
 
-# Copy Render-specific context.xml for database configuration
-COPY context-render.xml /usr/local/tomcat/conf/Catalina/localhost/ROOT.xml
+# Copy Docker-specific context.xml for database configuration
+COPY context-docker.xml /usr/local/tomcat/conf/Catalina/localhost/ROOT.xml
 
 # Expose Tomcat port
 EXPOSE 8080
