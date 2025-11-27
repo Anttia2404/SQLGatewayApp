@@ -30,9 +30,9 @@ public class SqlGatewayServlet extends HttpServlet {
             Class.forName("org.postgresql.Driver");
             
             // get a connection
-            String dbURL = "jdbc:postgresql://localhost:5432/murach";
-            String username = "postgres";
-            String password = "kokoko2005";
+            String dbURL = "jdbc:postgresql://dpg-d47cvdi4d50c73834gmg-a.oregon-postgres.render.com:5432/murach";
+            String username = "my_portfolio_db_vxq1_user";
+            String password = "E3XY5g7Z35scTCzeB49CtUZFOAJVUiPG";
             Connection connection = DriverManager.getConnection(
                     dbURL, username, password);
             
