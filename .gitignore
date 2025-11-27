@@ -1,5 +1,5 @@
 # Sensitive files - DO NOT COMMIT
-context-render.xml
+# Note: context-render.xml is needed for Render deployment
 *.env
 .env
 
