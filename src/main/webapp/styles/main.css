@@ -1,0 +1,295 @@
+/* ============================================
+   SQL GATEWAY APP - MINIMALIST MODERN DESIGN
+   Clean, Timeless, Professional
+   ============================================ */
+
+/* CSS Variables - Refined Color Palette */
+:root {
+    /* Primary Colors - Professional Blue/Gray */
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --primary-light: #3b82f6;
+    
+    /* Neutral Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    
+    /* Text Colors */
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    
+    /* Border & Shadow */
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    
+    /* Accent Colors */
+    --success: #10b981;
+    --error: #ef4444;
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Navigation Bar - Clean & Minimal */
+.nav {
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    display: flex;
+    gap: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav a:hover {
+    color: var(--primary);
+    background-color: var(--bg-tertiary);
+}
+
+/* Container */
+.container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
+
+/* Headings - Classic Typography */
+h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.025em;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+/* Form Container - Clean Card */
+form {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+/* Labels */
+label {
+    display: block;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Input Fields - Refined */
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* Textarea Specific */
+textarea {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    min-height: 200px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Submit Button - Professional */
+input[type="submit"],
+button {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    background-color: var(--primary);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: var(--primary-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+input[type="submit"]:active,
+button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Tables - Clean Design */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-top: 1.5rem;
+}
+
+th {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.875rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Message Boxes */
+.message {
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid;
+    font-size: 0.95rem;
+}
+
+.message.error {
+    background-color: #fef2f2;
+    border-left-color: var(--error);
+    color: #991b1b;
+}
+
+.message.success {
+    background-color: #f0fdf4;
+    border-left-color: var(--success);
+    color: #166534;
+}
+
+/* Result Section */
+.result-section {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .container {
+        padding: 0 1rem;
+        margin: 2rem auto;
+    }
+    
+    h1 {
+        font-size: 1.875rem;
+    }
+    
+    form {
+        padding: 1.5rem;
+    }
+}
+
+/* Utility Classes */
+.pad_top {
+    padding-top: 0.5rem;
+}
+
+.margin_left {
+    margin-left: 1rem;
+}
+
+br {
+    clear: both;
+}
+
+span {
+    margin-left: 0;
+}

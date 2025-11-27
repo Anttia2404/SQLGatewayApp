@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/SQLGatewayApp">
+    <Resource name="jdbc/murach" 
+              auth="Container"
+              driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://postgres:5432/murach"
+              username="postgres" 
+              password="postgres"
+              maxTotal="100" 
+              maxIdle="30" 
+              maxWaitMillis="10000"
+              removeAbandonedOnBorrow="true"
+              removeAbandonedTimeout="60" 
+              type="javax.sql.DataSource" />
+</Context>
