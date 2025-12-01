@@ -66,6 +66,17 @@
 
     <build>
         <finalName>ROOT</finalName>
+        
+        <!-- Ensure resources are copied to target -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
