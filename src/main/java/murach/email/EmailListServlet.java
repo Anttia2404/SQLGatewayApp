@@ -55,27 +55,37 @@ public class EmailListServlet extends HttpServlet {
                 UserDAO.insert(user);
                 
                 // Send confirmation email
-                try {
-                    String to = email;
-                    String from = "noreply@sqlgatewayapp.com";
-                    String subject = "Welcome to our Email List";
-                    String body = "Dear " + firstName + ",\n\n" +
-                                "Thank you for joining our email list!\n\n" +
-                                "Your information:\n" +
-                                "Name: " + firstName + " " + lastName + "\n" +
-                                "Email: " + email + "\n\n" +
-                                "Best regards,\n" +
-                                "SQL Gateway App Team";
-                    boolean isBodyHTML = false;
-                    
-                    // Sử dụng Gmail SMTP
-                    MailUtilGmail.sendMail(to, from, subject, body, isBodyHTML);
-                    
-                    System.out.println("Confirmation email sent to: " + email);
-                } catch (Exception e) {
-                    System.err.println("Error sending email: " + e.getMessage());
-                    e.printStackTrace();
-                    // Không throw exception - vẫn cho phép user đăng ký thành công
+                // NOTE: Render free tier blocks outbound SMTP connections
+                // Email will only work on localhost or paid hosting
+                String environment = System.getenv("RENDER");
+                if (environment == null) {
+                    // Running on localhost - send email
+                    try {
+                        String to = email;
+                        String from = "noreply@sqlgatewayapp.com";
+                        String subject = "Welcome to our Email List";
+                        String body = "Dear " + firstName + ",\n\n" +
+                                    "Thank you for joining our email list!\n\n" +
+                                    "Your information:\n" +
+                                    "Name: " + firstName + " " + lastName + "\n" +
+                                    "Email: " + email + "\n\n" +
+                                    "Best regards,\n" +
+                                    "SQL Gateway App Team";
+                        boolean isBodyHTML = false;
+                        
+                        // Sử dụng Gmail SMTP
+                        MailUtilGmail.sendMail(to, from, subject, body, isBodyHTML);
+                        
+                        System.out.println("Confirmation email sent to: " + email);
+                    } catch (Exception e) {
+                        System.err.println("Error sending email: " + e.getMessage());
+                        e.printStackTrace();
+                        // Không throw exception - vẫn cho phép user đăng ký thành công
+                    }
+                } else {
+                    // Running on Render - skip email (SMTP blocked)
+                    System.out.println("Skipping email on Render (SMTP blocked on free tier)");
+                    System.out.println("User registered: " + email);
                 }
             }
             request.setAttribute("user", user);
