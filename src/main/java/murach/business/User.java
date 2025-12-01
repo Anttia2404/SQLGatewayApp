@@ -1,11 +1,24 @@
 package murach.business;
 
 import java.io.Serializable;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "\"user\"")
 public class User implements Serializable {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid")
+    private Long userId;
+    
+    @Column(name = "firstname", nullable = false, length = 50)
     private String firstName;
+    
+    @Column(name = "lastname", nullable = false, length = 50)
     private String lastName;
+    
+    @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
     
     public User() {
@@ -18,6 +31,14 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+    
+    public Long getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
     
     public String getFirstName() {

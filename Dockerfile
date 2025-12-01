@@ -1,5 +1,5 @@
 # Multi-stage build for SQLGatewayApp - Render Deployment
-# Force rebuild: 2025-11-27 15:27 - Fixed hostname typo
+# Force rebuild: 2025-11-27 15:54 - Clear all caches
 # Stage 1: Build the application
 FROM maven:3.9-eclipse-temurin-11 AS builder
 
