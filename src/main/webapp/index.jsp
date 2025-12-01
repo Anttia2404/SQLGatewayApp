@@ -10,6 +10,7 @@
 
 <div class="nav">
     <a href="emailList">Email List</a>
+    <a href="userManagement">User Management</a>
     <a href="sqlGateway">SQL Gateway</a>
 </div>
 

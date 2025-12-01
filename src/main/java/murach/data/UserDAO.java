@@ -110,6 +110,63 @@ public class UserDAO {
     }
     
     /**
+     * Delete a user from the database by userId
+     * @param userId ID of the user to delete
+     * @return 1 if successful, 0 if failed
+     */
+    public static int delete(int userId) {
+        EntityManager em = null;
+        EntityTransaction transaction = null;
+        
+        try {
+            em = JPAUtil.getEntityManager();
+            transaction = em.getTransaction();
+            transaction.begin();
+            
+            // Find user by ID
+            User user = em.find(User.class, userId);
+            if (user != null) {
+                em.remove(user);
+            }
+            
+            transaction.commit();
+            return 1;
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Error deleting user by ID: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        } finally {
+            JPAUtil.closeEntityManager(em);
+        }
+    }
+    
+    /**
+     * Select all users from the database
+     * @return List of all users
+     */
+    public static java.util.List<User> selectAll() {
+        EntityManager em = null;
+        
+        try {
+            em = JPAUtil.getEntityManager();
+            
+            TypedQuery<User> query = em.createQuery(
+                "SELECT u FROM User u ORDER BY u.userId", User.class);
+            
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error selecting all users: " + e.getMessage());
+            e.printStackTrace();
+            return new java.util.ArrayList<>();
+        } finally {
+            JPAUtil.closeEntityManager(em);
+        }
+    }
+    
+    /**
      * Check if an email already exists in the database
      * @param email Email to check
      * @return true if email exists, false otherwise
