@@ -35,12 +35,14 @@ public class MailUtilGmail {
                               : "ifzv vjpc gspu xglp";
         
         // 1. Get a mail session (Lấy phiên mail)
+        // Sử dụng port 587 với STARTTLS thay vì port 465 (SSL)
+        // vì Render có thể chặn port 465
         Properties props = new Properties();
-        props.put("mail.transport.protocol", "smtps");
-        props.put("mail.smtps.host", "smtp.gmail.com");
-        props.put("mail.smtps.port", 465);
-        props.put("mail.smtps.auth", "true");
-        props.put("mail.smtps.quitwait", "false");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.required", "true");
         
         Session session = Session.getDefaultInstance(props);
         session.setDebug(true);  // Bật debug để xem log
@@ -63,8 +65,8 @@ public class MailUtilGmail {
         message.setRecipient(Message.RecipientType.TO, toAddress);
         
         // 4. Send the message (Gửi tin nhắn - có xác thực)
-        Transport transport = session.getTransport();
-        transport.connect(username, password);
+        Transport transport = session.getTransport("smtp");
+        transport.connect("smtp.gmail.com", 587, username, password);
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
