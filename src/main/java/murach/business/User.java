@@ -4,12 +4,12 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "user")
 public class User implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userid")
+    @Column(name = "user")
     private Integer userId;  // Changed from Long to Integer to match SERIAL type
     
     @Column(name = "firstname", nullable = false, length = 50)

@@ -144,26 +144,43 @@ public class UserDAO {
     }
     
     /**
-     * Select all users from the database
+     * Select all users from the database using JDBC (same as SQL Gateway)
      * @return List of all users
      */
     public static java.util.List<User> selectAll() {
-        EntityManager em = null;
+        java.util.List<User> users = new java.util.ArrayList<>();
         
         try {
-            em = JPAUtil.getEntityManager();
+            // Use JDBC like SQL Gateway does
+            Class.forName("org.postgresql.Driver");
             
-            TypedQuery<User> query = em.createQuery(
-                "SELECT u FROM User u ORDER BY u.userId", User.class);
+            String dbURL = "jdbc:postgresql://dpg-d47cvdi4d50c73834gmg-a.oregon-postgres.render.com:5432/murach";
+            String username = "my_portfolio_db_vxq1_user";
+            String password = "E3XY5g7Z35scTCzeB49CtUZFOAJVUiPG";
             
-            return query.getResultList();
+            java.sql.Connection connection = java.sql.DriverManager.getConnection(dbURL, username, password);
+            java.sql.Statement statement = connection.createStatement();
+            java.sql.ResultSet resultSet = statement.executeQuery("SELECT \"user\", email, firstname, lastname FROM \"user\" ORDER BY \"user\"");
+            
+            while (resultSet.next()) {
+                User user = new User();
+                user.setUserId(resultSet.getInt("user"));
+                user.setFirstName(resultSet.getString("firstname"));
+                user.setLastName(resultSet.getString("lastname"));
+                user.setEmail(resultSet.getString("email"));
+                users.add(user);
+            }
+            
+            resultSet.close();
+            statement.close();
+            connection.close();
+            
         } catch (Exception e) {
             System.err.println("Error selecting all users: " + e.getMessage());
             e.printStackTrace();
-            return new java.util.ArrayList<>();
-        } finally {
-            JPAUtil.closeEntityManager(em);
         }
+        
+        return users;
     }
     
     /**
