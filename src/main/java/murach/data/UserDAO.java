@@ -9,32 +9,36 @@ import murach.business.User;
 public class UserDAO {
     
     /**
-     * Insert a new user into the database
+     * Insert a new user into the database using JDBC
      * @param user User object to insert
      * @return 1 if successful, 0 if failed
      */
     public static int insert(User user) {
-        EntityManager em = null;
-        EntityTransaction transaction = null;
-        
         try {
-            em = JPAUtil.getEntityManager();
-            transaction = em.getTransaction();
-            transaction.begin();
+            Class.forName("org.postgresql.Driver");
             
-            em.persist(user);//đánh dấu
+            String dbURL = "jdbc:postgresql://dpg-d47cvdi4d50c73834gmg-a.oregon-postgres.render.com:5432/murach";
+            String username = "my_portfolio_db_vxq1_user";
+            String password = "E3XY5g7Z35scTCzeB49CtUZFOAJVUiPG";
             
-            transaction.commit();//insert
-            return 1;
+            java.sql.Connection connection = java.sql.DriverManager.getConnection(dbURL, username, password);
+            java.sql.PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO \"user\" (firstname, lastname, email) VALUES (?, ?, ?)"
+            );
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getEmail());
+            
+            int result = statement.executeUpdate();
+            
+            statement.close();
+            connection.close();
+            
+            return result > 0 ? 1 : 0;
         } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
             System.err.println("Error inserting user: " + e.getMessage());
             e.printStackTrace();
             return 0;
-        } finally {
-            JPAUtil.closeEntityManager(em);
         }
     }
     
@@ -184,28 +188,39 @@ public class UserDAO {
     }
     
     /**
-     * Check if an email already exists in the database
+     * Check if an email already exists in the database using JDBC
      * @param email Email to check
      * @return true if email exists, false otherwise
      */
     public static boolean emailExists(String email) {
-        EntityManager em = null;
-        
         try {
-            em = JPAUtil.getEntityManager();
+            Class.forName("org.postgresql.Driver");
             
-            TypedQuery<Long> query = em.createQuery(
-                "SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class);
-            query.setParameter("email", email);
+            String dbURL = "jdbc:postgresql://dpg-d47cvdi4d50c73834gmg-a.oregon-postgres.render.com:5432/murach";
+            String username = "my_portfolio_db_vxq1_user";
+            String password = "E3XY5g7Z35scTCzeB49CtUZFOAJVUiPG";
             
-            Long count = query.getSingleResult();
-            return count > 0;
+            java.sql.Connection connection = java.sql.DriverManager.getConnection(dbURL, username, password);
+            java.sql.PreparedStatement statement = connection.prepareStatement(
+                "SELECT COUNT(*) FROM \"user\" WHERE email = ?"
+            );
+            statement.setString(1, email);
+            
+            java.sql.ResultSet resultSet = statement.executeQuery();
+            boolean exists = false;
+            if (resultSet.next()) {
+                exists = resultSet.getLong(1) > 0;
+            }
+            
+            resultSet.close();
+            statement.close();
+            connection.close();
+            
+            return exists;
         } catch (Exception e) {
             System.err.println("Error checking email existence: " + e.getMessage());
             e.printStackTrace();
             return false;
-        } finally {
-            JPAUtil.closeEntityManager(em);
         }
     }
     

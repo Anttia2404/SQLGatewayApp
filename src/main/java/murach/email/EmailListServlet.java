@@ -58,7 +58,7 @@ public class EmailListServlet extends HttpServlet {
                 String environment = System.getenv("RENDER");
                 try {
                     String to = email;
-                    String from = "onboarding@resend.dev";  // Resend test email (no verification needed)
+                    String from = "tanloc01293@gmail.com";
                     String subject = "Welcome to our Email List";
                     String body = "Dear " + firstName + ",\n\n" +
                                 "Thank you for joining our email list!\n\n" +
@@ -70,9 +70,9 @@ public class EmailListServlet extends HttpServlet {
                     boolean isBodyHTML = false;
                     
                     if (environment != null) {
-                        // Running on Render - use Brevo API (SMTP blocked)
+                        // Running on Render - use Elastic Email API (SMTP blocked)
                         MailUtilAPI.sendMail(to, from, subject, body, isBodyHTML);
-                        System.out.println("Email sent via Brevo API to: " + email);
+                        System.out.println("Email sent via Elastic Email API to: " + email);
                     } else {
                         // Running locally - use Gmail SMTP
                         MailUtilGmail.sendMail(to, from, subject, body, isBodyHTML);

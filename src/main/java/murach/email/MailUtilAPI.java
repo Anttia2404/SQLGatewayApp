@@ -8,16 +8,16 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 /**
- * Utility class để gửi email qua Resend API (HTTP)
+ * Utility class để gửi email qua Elastic Email API (HTTP)
  * Sử dụng java.net.http.HttpClient (có sẵn từ Java 11)
  * Không cần SMTP - phù hợp cho Render free tier
  */
 public class MailUtilAPI {
     
-    private static final String RESEND_API_URL = "https://api.resend.com/emails";
+    private static final String ELASTIC_API_URL = "https://api.elasticemail.com/v2/email/send";
     
     /**
-     * Gửi email qua Resend API
+     * Gửi email qua Elastic Email API
      * 
      * @param to Địa chỉ email người nhận
      * @param from Địa chỉ email người gửi
@@ -32,24 +32,23 @@ public class MailUtilAPI {
                                 boolean bodyIsHTML) 
             throws IOException, InterruptedException {
         
-        // Đọc Resend API key từ environment variable
-        String apiKey = System.getenv("RESEND_API_KEY");
+        // Đọc Elastic Email API key từ environment variable
+        String apiKey = System.getenv("ELASTIC_API_KEY");
         if (apiKey == null || apiKey.isEmpty()) {
             throw new IllegalStateException(
-                "RESEND_API_KEY environment variable is not set. " +
+                "ELASTIC_API_KEY environment variable is not set. " +
                 "Please set it in your Render dashboard or local environment."
             );
         }
         
-        // Tạo JSON payload cho Resend API
-        // Format: https://resend.com/docs/api-reference/emails/send-email
-        String contentKey = bodyIsHTML ? "html" : "text";
-        String jsonPayload = "{\n" +
-            "  \"from\": \"" + escapeJson(from) + "\",\n" +
-            "  \"to\": [\"" + escapeJson(to) + "\"],\n" +
-            "  \"subject\": \"" + escapeJson(subject) + "\",\n" +
-            "  \"" + contentKey + "\": \"" + escapeJson(body) + "\"\n" +
-            "}";
+        // Tạo form data cho Elastic Email API
+        // Format: https://elasticemail.com/developers/api-documentation/rest-api#operation/emailsPost
+        String bodyType = bodyIsHTML ? "html" : "text";
+        String formData = "apikey=" + urlEncode(apiKey) +
+                         "&from=" + urlEncode(from) +
+                         "&to=" + urlEncode(to) +
+                         "&subject=" + urlEncode(subject) +
+                         "&body" + bodyType + "=" + urlEncode(body);
         
         // Tạo HTTP client và request
         HttpClient client = HttpClient.newBuilder()
@@ -57,10 +56,9 @@ public class MailUtilAPI {
             .build();
         
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(RESEND_API_URL))
-            .header("Authorization", "Bearer " + apiKey)
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
+            .uri(URI.create(ELASTIC_API_URL))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .POST(HttpRequest.BodyPublishers.ofString(formData))
             .timeout(Duration.ofSeconds(30))
             .build();
         
@@ -73,11 +71,11 @@ public class MailUtilAPI {
         // Kiểm tra response
         int statusCode = response.statusCode();
         if (statusCode >= 200 && statusCode < 300) {
-            System.out.println("Email sent successfully via Resend API to: " + to);
+            System.out.println("Email sent successfully via Elastic Email API to: " + to);
             System.out.println("Response: " + response.body());
         } else {
             String errorMsg = String.format(
-                "Failed to send email via Resend API. Status: %d, Response: %s",
+                "Failed to send email via Elastic Email API. Status: %d, Response: %s",
                 statusCode,
                 response.body()
             );
@@ -87,15 +85,14 @@ public class MailUtilAPI {
     }
     
     /**
-     * Escape special characters trong JSON string
+     * URL encode string for form data
      */
-    private static String escapeJson(String str) {
+    private static String urlEncode(String str) {
         if (str == null) return "";
-        return str
-            .replace("\\", "\\\\")
-            .replace("\"", "\\\"")
-            .replace("\n", "\\n")
-            .replace("\r", "\\r")
-            .replace("\t", "\\t");
+        try {
+            return java.net.URLEncoder.encode(str, "UTF-8");
+        } catch (Exception e) {
+            return str;
+        }
     }
 }
