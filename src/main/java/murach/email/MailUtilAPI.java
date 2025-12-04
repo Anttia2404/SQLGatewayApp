@@ -8,16 +8,16 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 /**
- * Utility class để gửi email qua Elastic Email API (HTTP)
+ * Utility class để gửi email qua Brevo API (HTTP)
  * Sử dụng java.net.http.HttpClient (có sẵn từ Java 11)
  * Không cần SMTP - phù hợp cho Render free tier
  */
 public class MailUtilAPI {
     
-    private static final String ELASTIC_API_URL = "https://api.elasticemail.com/v2/email/send";
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
     
     /**
-     * Gửi email qua Elastic Email API
+     * Gửi email qua Brevo API
      * 
      * @param to Địa chỉ email người nhận
      * @param from Địa chỉ email người gửi
@@ -32,23 +32,24 @@ public class MailUtilAPI {
                                 boolean bodyIsHTML) 
             throws IOException, InterruptedException {
         
-        // Đọc Elastic Email API key từ environment variable
-        String apiKey = System.getenv("ELASTIC_API_KEY");
+        // Đọc Brevo API key từ environment variable
+        String apiKey = System.getenv("BREVO_API_KEY");
         if (apiKey == null || apiKey.isEmpty()) {
             throw new IllegalStateException(
-                "ELASTIC_API_KEY environment variable is not set. " +
+                "BREVO_API_KEY environment variable is not set. " +
                 "Please set it in your Render dashboard or local environment."
             );
         }
         
-        // Tạo form data cho Elastic Email API
-        // Format: https://elasticemail.com/developers/api-documentation/rest-api#operation/emailsPost
-        String bodyType = bodyIsHTML ? "html" : "text";
-        String formData = "apikey=" + urlEncode(apiKey) +
-                         "&from=" + urlEncode(from) +
-                         "&to=" + urlEncode(to) +
-                         "&subject=" + urlEncode(subject) +
-                         "&body" + bodyType + "=" + urlEncode(body);
+        // Tạo JSON payload cho Brevo API
+        // Format: https://developers.brevo.com/reference/sendtransacemail
+        String contentKey = bodyIsHTML ? "htmlContent" : "textContent";
+        String jsonPayload = "{" +
+            "\"sender\":{\"email\":\"" + escapeJson(from) + "\"}," +
+            "\"to\":[{\"email\":\"" + escapeJson(to) + "\"}]," +
+            "\"subject\":\"" + escapeJson(subject) + "\"," +
+            "\"" + contentKey + "\":\"" + escapeJson(body) + "\"" +
+            "}";
         
         // Tạo HTTP client và request
         HttpClient client = HttpClient.newBuilder()
@@ -56,9 +57,11 @@ public class MailUtilAPI {
             .build();
         
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(ELASTIC_API_URL))
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .POST(HttpRequest.BodyPublishers.ofString(formData))
+            .uri(URI.create(BREVO_API_URL))
+            .header("accept", "application/json")
+            .header("api-key", apiKey)
+            .header("content-type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
             .timeout(Duration.ofSeconds(30))
             .build();
         
@@ -71,11 +74,11 @@ public class MailUtilAPI {
         // Kiểm tra response
         int statusCode = response.statusCode();
         if (statusCode >= 200 && statusCode < 300) {
-            System.out.println("Email sent successfully via Elastic Email API to: " + to);
+            System.out.println("Email sent successfully via Brevo API to: " + to);
             System.out.println("Response: " + response.body());
         } else {
             String errorMsg = String.format(
-                "Failed to send email via Elastic Email API. Status: %d, Response: %s",
+                "Failed to send email via Brevo API. Status: %d, Response: %s",
                 statusCode,
                 response.body()
             );
@@ -85,14 +88,15 @@ public class MailUtilAPI {
     }
     
     /**
-     * URL encode string for form data
+     * Escape special characters trong JSON string
      */
-    private static String urlEncode(String str) {
+    private static String escapeJson(String str) {
         if (str == null) return "";
-        try {
-            return java.net.URLEncoder.encode(str, "UTF-8");
-        } catch (Exception e) {
-            return str;
-        }
+        return str
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\t", "\\t");
     }
 }
