@@ -58,7 +58,7 @@ public class EmailListServlet extends HttpServlet {
                 String environment = System.getenv("RENDER");
                 try {
                     String to = email;
-                    String from = "noreply@sqlgatewayapp.com";
+                    String from = "onboarding@resend.dev";  // Resend test email (no verification needed)
                     String subject = "Welcome to our Email List";
                     String body = "Dear " + firstName + ",\n\n" +
                                 "Thank you for joining our email list!\n\n" +
