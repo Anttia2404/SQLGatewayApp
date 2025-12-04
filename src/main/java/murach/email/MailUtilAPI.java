@@ -44,20 +44,12 @@ public class MailUtilAPI {
         // Tạo JSON payload cho Resend API
         // Format: https://resend.com/docs/api-reference/emails/send-email
         String contentKey = bodyIsHTML ? "html" : "text";
-        String jsonPayload = String.format("""
-            {
-              "from": "%s",
-              "to": ["%s"],
-              "subject": "%s",
-              "%s": "%s"
-            }
-            """,
-            escapeJson(from),
-            escapeJson(to),
-            escapeJson(subject),
-            contentKey,
-            escapeJson(body)
-        );
+        String jsonPayload = "{\n" +
+            "  \"from\": \"" + escapeJson(from) + "\",\n" +
+            "  \"to\": [\"" + escapeJson(to) + "\"],\n" +
+            "  \"subject\": \"" + escapeJson(subject) + "\",\n" +
+            "  \"" + contentKey + "\": \"" + escapeJson(body) + "\"\n" +
+            "}";
         
         // Tạo HTTP client và request
         HttpClient client = HttpClient.newBuilder()

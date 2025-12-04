@@ -10,7 +10,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user")
-    private Integer userId;  // Changed from Long to Integer to match SERIAL type
+    private Long userId;  // Changed to Long to match BIGSERIAL (BIGINT) type
     
     @Column(name = "firstname", nullable = false, length = 50)
     private String firstName;
@@ -33,11 +33,11 @@ public class User implements Serializable {
         this.email = email;
     }
     
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
     
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
     

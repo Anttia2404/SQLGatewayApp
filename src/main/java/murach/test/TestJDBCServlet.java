@@ -46,7 +46,7 @@ public class TestJDBCServlet extends HttpServlet {
             while (resultSet.next()) {
                 count++;
                 out.println("<tr>");
-                out.println("<td>" + resultSet.getInt("user") + "</td>");
+                out.println("<td>" + resultSet.getLong("user") + "</td>");
                 out.println("<td>" + resultSet.getString("email") + "</td>");
                 out.println("<td>" + resultSet.getString("firstname") + "</td>");
                 out.println("<td>" + resultSet.getString("lastname") + "</td>");

@@ -164,7 +164,7 @@ public class UserDAO {
             
             while (resultSet.next()) {
                 User user = new User();
-                user.setUserId(resultSet.getInt("user"));
+                user.setUserId(resultSet.getLong("user"));
                 user.setFirstName(resultSet.getString("firstname"));
                 user.setLastName(resultSet.getString("lastname"));
                 user.setEmail(resultSet.getString("email"));
